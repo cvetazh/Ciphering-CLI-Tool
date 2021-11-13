@@ -13,8 +13,8 @@ function transformation(config, inputFile, outputFile){
 
     let writeStream;
     
-    if(outputFile && isValidFile(outputFile)) writeStream = fs.createWriteStream(outputFile);
-    else writeStream = process.stdout;
+    if(outputFile && isValidFile(outputFile)) writeStream = fs.createWriteStream(outputFile, {flags: 'a', flags:'r+'});
+   else writeStream = process.stdout;
 
     class AtbashCipherTransform extends Transform{
         _transform(chunk, encoding, callback){
