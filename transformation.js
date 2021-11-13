@@ -13,7 +13,7 @@ function transformation(config, inputFile, outputFile){
 
     let writeStream;
     
-    if(outputFile && isValidFile(outputFile)) writeStream = fs.createWriteStream(outputFile, {flags: 'a'});
+    if(outputFile && isValidFile(outputFile)) writeStream = fs.createWriteStream(outputFile);
     else writeStream = process.stdout;
 
     class AtbashCipherTransform extends Transform{
@@ -53,7 +53,11 @@ function transformation(config, inputFile, outputFile){
       readStream,
       ...transformStreams,
        writeStream,
-      (err) =>{}
+      (err) =>{      
+        if (err){
+          process.stderr.write(err.message + '\n');
+          process.exit(1);
+    }}
     );
 }
 
