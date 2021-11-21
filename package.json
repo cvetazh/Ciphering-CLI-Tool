@@ -1,0 +1,33 @@
+{
+  "name": "ciphering-cli-tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "my_ciphering_cli.js",
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cvetazh/Ciphering-CLI-Tool.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cvetazh/Ciphering-CLI-Tool/issues"
+  },
+  "homepage": "https://github.com/cvetazh/Ciphering-CLI-Tool#readme",
+  "devDependencies": {
+
+    "jest": "^27.3.1"
+  },
+  "jest": {
+    "verbose": true,
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ]
+  },
+  "dependencies": {
+  }
+}
