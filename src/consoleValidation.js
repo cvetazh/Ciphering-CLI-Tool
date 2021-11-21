@@ -1,8 +1,6 @@
 'use strict';
 
 const ErrorCustom = require('../src/errorCustom');
-// const {argv} = process;
-// const argvs = argv.slice(2);
 
 function isExistsOptional(argvs){
     const existsOptional = new Set([]);
