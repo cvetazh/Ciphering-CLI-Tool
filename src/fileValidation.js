@@ -1,15 +1,13 @@
 const fs = require('fs');
-const {errorHandler} = require('./consoleValidation.js');
+const ErrorCustom = require('../src/errorCustom');
 
 function IsFile(file){
-  fs.stat(file, (err, stats) =>{
-    if ( stats.isDirectory() ) return errorHandler(new Error('File is directory'));
-  });
+    if ( fs.statSync(file).isDirectory() ) throw new ErrorCustom('File is directory');
 }
 
 function isValidFile(file){
-  fs.open(file,'r+', err =>{
-    if (err) return errorHandler(new Error('Check the file path or file name and its permissions'));
+  fs.open(file,'r+', (err, data) =>{
+    if (err) throw new ErrorCustom('Check the file path or file name and its permissions');
     IsFile(file);
    });
   return true;
