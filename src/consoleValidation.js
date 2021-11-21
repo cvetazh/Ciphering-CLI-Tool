@@ -1,53 +1,42 @@
 'use strict';
-const {argv, stderr, exit} = process;
 
-const valuesCipher = new Set (['C1','C0','R1','R0','A']);
-const existsOptional = new Set([]);
-const config = ['-c', '--config'];
-const argvs = argv.slice(2);
+const ErrorCustom = require('../src/errorCustom');
+// const {argv} = process;
+// const argvs = argv.slice(2);
 
-function isExistsOptional(){
+function isExistsOptional(argvs){
+    const existsOptional = new Set([]);
     argvs.forEach(item => {
       if (!existsOptional.has(item)) existsOptional.add(item);
-      else return errorHandler(new Error(`Option ${item} already exists`));
+      else throw new ErrorCustom(`Option ${item} already exists`);
     });
 }
 
-function errorHandler(error){
-    stderr.write(error.message);
-    exit(1);
+function isExistsConfigFlag(argv) {
+  const arr = argv.split(' ');
+  const configIndex = arr.findIndex( flag => flag == '-c' || flag == '--config' );
+  if ( configIndex == -1 ) throw new ErrorCustom(`Missing config (-c or --config)`)
+  else return arr[configIndex + 1];
 }
 
-function isConfigFlag() {
-    if (argv.includes(config[0])) return argvs.indexOf(config[0]);
-    if (argv.includes(config[1])) return argvs.indexOf(config[1]);
-    if (argvs.indexOf(config[0]) || argvs.indexOf(config[1])) return errorHandler(new Error('Enter the correct flag (-c or --config)'));
-}
-
-function getValidConfig(){
-    let config = argvs[isConfigFlag()+1].trim();
-    if (config === undefined || config == '') return errorHandler(new Error('Missing config'));
+function getValidConfig(argvs){
+    const valuesCipher = new Set (['C1','C0','R1','R0','A']);
+    let config = isExistsConfigFlag(argvs).trim();
+    if (config === undefined || config == '') throw new ErrorCustom('Missing config');
     let arrConfig = config.split('-');
-    let newConfig = [];
     arrConfig.forEach(item => {
-        if(item.match(/A{2,}/)){
-            item.split('').forEach(symbol => newConfig.push(symbol));
-        }
-        else newConfig.push(item);
+      if (!valuesCipher.has(item)) throw new ErrorCustom(`Incorrect cipher ${item}`);
     })
-    newConfig.forEach(item=>{
-        if (!valuesCipher.has(item)) return errorHandler(new Error(`Incorrect cipher ${item}`))
-    })
-    return newConfig.join('-'); 
+    return arrConfig.join('-'); 
 }
 
-function getFile(optional){
+function getFile(argv, optional){
     let index = -1;
     let file;
-    if (argv.includes(optional[0])) index = argvs.indexOf(optional[0]);
-    if (argv.includes(optional[1])) index =  argvs.indexOf(optional[1]);
-    if (index != -1 && argvs[index + 1]) return file = argvs[index + 1].trim();
+    if (argv.includes(optional[0])) index = argv.indexOf(optional[0]);
+    if (argv.includes(optional[1])) index =  argv.indexOf(optional[1]);
+    if (index != -1 && argv[index + 1]) return file = argv[index + 1].trim();
     else return file;
 }
 
-module.exports = {errorHandler, getValidConfig, getFile, isExistsOptional};
+module.exports = {getValidConfig, getFile, isExistsOptional, isExistsConfigFlag};
